@@ -4,11 +4,15 @@
 /** Basic functionality we need promises to implement. @ignore internal use. */
 
 export interface Promisy<PromiseType> {
-	new(handler: any): PromiseType;
+	then(handler: any): PromiseType;
+	catch(handler: any): PromiseType;
+	finally(handler: any): PromiseType;
+}
 
-	then: (handler: any) => PromiseType;
-	catch: (handler: any) => PromiseType;
-	finally: (handler: any) => PromiseType;
+/** Promise class shim with basic functionality. @ignore internal use. */
+
+export interface PromisyClass<PromiseType> {
+	new(handler: any): PromiseType;
 }
 
 /** Task wraps a promise, delaying it until some resource gets less busy. */
@@ -26,7 +30,7 @@ export class Task<PromiseType extends Promisy<PromiseType>> {
 
 	/** Wrap task result in a new promise so it can be resolved later. */
 
-	delay(Promise: Promisy<PromiseType>) {
+	delay(Promise: PromisyClass<PromiseType>) {
 		return(new Promise((resolve: any, reject: any) => {
 			this.resolve = resolve;
 			this.reject = reject;

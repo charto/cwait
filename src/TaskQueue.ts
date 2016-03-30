@@ -1,10 +1,10 @@
 // This file is part of cwait, copyright (c) 2015-2016 BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
-import {Task, Promisy} from './Task'
+import {Task, Promisy, PromisyClass} from './Task'
 
 export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
-	constructor(Promise: Promisy<PromiseType>, concurrency: number) {
+	constructor(Promise: PromisyClass<PromiseType>, concurrency: number) {
 		this.Promise = Promise;
 		this.concurrency = concurrency;
 	}
@@ -31,6 +31,13 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 		}
 	}
 
+	/** Wrap a function returning a promise, so that before running
+	  * it waits until concurrent invocations are below this queue's limit. */
+
+	wrap(func: (...args: any[]) => PromiseType, thisObject?: any) {
+		return((...args: any[]) => this.add(() => func.apply(thisObject, args)));
+	}
+
 	/** Start the next task from the backlog. */
 
 	private next() {
@@ -40,7 +47,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 		else --this.busyCount;
 	}
 
-	private Promise: Promisy<PromiseType>;
+	private Promise: PromisyClass<PromiseType>;
 
 	/** Number of promises allowed to resolve concurrently. */
 	concurrency = 2;

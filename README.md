@@ -12,6 +12,18 @@ Just wrap your existing "download finished" promise and use it as before.
 Usage
 -----
 
+```typescript
+import * as Promise from 'bluebird';
+import {TaskQueue} from 'cwait';
+
+/** Queue allowing 3 concurrent function calls. */
+var queue = new TaskQueue(Promise, 3);
+
+Promise.map(list, download); // Download all listed files simultaneously.
+
+Promise.map(list, queue.wrap(download))); // Download 3 files at a time.
+```
+
 API
 ===
 
@@ -28,7 +40,7 @@ API
 > > &emsp;&#x25aa; onFinish <sup><code>() => void</code></sup>  
 > > **.delay( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Wrap task result in a new promise so it can be resolved later.</em>  
-> > &emsp;&#x25aa; Promise <sup><code>[Promisy](#api-Promisy)</code></sup>  
+> > &emsp;&#x25aa; Promise <sup><code>[PromisyClass](#api-PromisyClass)</code></sup>  
 > > **.resume( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Resolve the result of a delayed task and call onFinish when done.</em>  
 > > &emsp;&#x25aa; onFinish <sup><code>() => void</code></sup>  
@@ -43,12 +55,17 @@ API
 >  
 > Methods:  
 > > **new( )** <sup>&rArr; <code>[TaskQueue](#api-TaskQueue)</code></sup>  
-> > &emsp;&#x25aa; Promise <sup><code>[Promisy](#api-Promisy)</code></sup>  
+> > &emsp;&#x25aa; Promise <sup><code>[PromisyClass](#api-PromisyClass)</code></sup>  
 > > &emsp;&#x25aa; concurrency <sup><code>number</code></sup>  
 > > **.add( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Add a new task to the queue.
 It will start when the number of other concurrent tasks is low enough.</em>  
 > > &emsp;&#x25aa; func <sup><code>() => PromiseType</code></sup>  
+> > **.wrap( )** <sup>&rArr; <code>(...args: any[]) => PromiseType</code></sup>  
+> > &emsp;<em>Wrap a function returning a promise, so that before running
+it waits until concurrent invocations are below this queue's limit.</em>  
+> > &emsp;&#x25aa; func <sup><code>(...args: any[]) => PromiseType</code></sup>  
+> > &emsp;&#x25ab; thisObject<sub>?</sub> <sup><code>any</code></sup>  
 >  
 > Properties:  
 > > **.concurrency** <sup><code>number</code></sup>  
