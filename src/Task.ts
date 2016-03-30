@@ -43,8 +43,8 @@ export class Task<PromiseType extends Promisy<PromiseType>> {
 		return(this.start(onFinish).then(this.resolve).catch(this.reject));
 	}
 
-	func: () => PromiseType;
+	private func: () => PromiseType;
 
-	resolve: any;
-	reject: any;
+	private resolve: any;
+	private reject: any;
 }

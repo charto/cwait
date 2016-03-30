@@ -44,11 +44,6 @@ API
 > > **.resume( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Resolve the result of a delayed task and call onFinish when done.</em>  
 > > &emsp;&#x25aa; onFinish <sup><code>() => void</code></sup>  
->  
-> Properties:  
-> > **.func** <sup><code>() => PromiseType</code></sup>  
-> > **.resolve** <sup><code>any</code></sup>  
-> > **.reject** <sup><code>any</code></sup>  
 >
 > <a name="api-TaskQueue"></a>
 > ### Class [`TaskQueue`](#api-TaskQueue)
