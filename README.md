@@ -9,8 +9,16 @@ to limit how many are being resolved simultaneously. It can wrap any ES6-compati
 This allows for example limiting simultaneous downloads with minor changes to existing code.
 Just wrap your existing "download finished" promise and use it as before.
 
+This is a tiny library with no dependencies, usable both in browsers and Node.js.
+
 Usage
 -----
+
+Create a new `TaskQueue` passing it whatever `Promise` constructor you're using (ES6, Bluebird, some other shim...)
+and the maximum number of promise-returning functions to run concurrently.
+Then just call `queue.wrap(<function>)` instead of `<function>` to limit simultaneous execution.
+
+Simple Node.js example:
 
 ```typescript
 import * as Promise from 'bluebird';
@@ -22,6 +30,15 @@ var queue = new TaskQueue(Promise, 3);
 Promise.map(list, download); // Download all listed files simultaneously.
 
 Promise.map(list, queue.wrap(download))); // Download 3 files at a time.
+```
+
+See [`test/test.ts`](test/test.ts) for some runnable code or run it like this:
+
+```sh
+git clone https://github.com/charto/cwait.git
+cd cwait
+npm install
+npm test
 ```
 
 API
