@@ -1,0 +1,27 @@
+{
+  "name": "cwait",
+  "version": "0.0.1",
+  "description": "Limit number of promises running in parallel",
+  "main": "dist/cwait.js",
+  "typings": "dist/cwait.d.ts",
+  "scripts": {
+    "tsc": "tsc",
+    "docts": "docts",
+    "prepublish": "tsc",
+    "test": "node dist/cwait.js"
+  },
+  "author": "Juha Järvi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charto/cwait.git"
+  },
+  "bugs": {
+    "url": "https://github.com/charto/cwait/issues"
+  },
+  "homepage": "https://github.com/charto/cwait#readme",
+  "devDependencies": {
+    "docts": "0.0.3",
+    "typescript": "^1.8.7"
+  }
+}
