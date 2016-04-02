@@ -7,6 +7,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	constructor(Promise: PromisyClass<PromiseType>, concurrency: number) {
 		this.Promise = Promise;
 		this.concurrency = concurrency;
+		this.nextBound = () => this.next();
 	}
 
 	/** Add a new task to the queue.
@@ -18,7 +19,11 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 
 			++this.busyCount;
 
-			return(func().finally(() => this.next()));
+			var result = func();
+
+			result.then(this.nextBound, this.nextBound);
+
+			return(result);
 		} else {
 			// Schedule the task and return a promise resolving
 			// to the result of task.start().
@@ -43,14 +48,16 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	private next() {
 		var task = this.backlog.shift();
 
-		if(task) task.resume(() => this.next());
+		if(task) task.resume(this.nextBound);
 		else --this.busyCount;
 	}
+
+	private nextBound: () => void;
 
 	private Promise: PromisyClass<PromiseType>;
 
 	/** Number of promises allowed to resolve concurrently. */
-	concurrency = 2;
+	concurrency: number;
 
 	private backlog: Task<PromiseType>[] = [];
 	private busyCount = 0;

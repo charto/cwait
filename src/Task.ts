@@ -4,9 +4,7 @@
 /** Basic functionality we need promises to implement. @ignore internal use. */
 
 export interface Promisy<PromiseType> {
-	then(handler: any): PromiseType;
-	catch(handler: any): PromiseType;
-	finally(handler: any): PromiseType;
+	then(resolved: (result?: any) => any, rejected?: (err?: any) => any): PromiseType;
 }
 
 /** Promise class shim with basic functionality. @ignore internal use. */
@@ -22,29 +20,33 @@ export class Task<PromiseType extends Promisy<PromiseType>> {
 		this.func = func;
 	}
 
-	/** Start the task immediately and call onFinish callback when done. */
-
-	start(onFinish: () => void) {
-		return(this.func().finally(onFinish));
-	}
-
 	/** Wrap task result in a new promise so it can be resolved later. */
 
 	delay(Promise: PromisyClass<PromiseType>) {
-		return(new Promise((resolve: any, reject: any) => {
-			this.resolve = resolve;
-			this.reject = reject;
-		}));
+		if(!this.promise) {
+			this.promise = new Promise((resolve: any, reject: any) => {
+				this.resolve = resolve;
+				this.reject = reject;
+			});
+		}
+
+		return(this.promise);
 	}
 
-	/** Resolve the result of a delayed task and call onFinish when done. */
+	/** Start the task and call onFinish when done. */
 
 	resume(onFinish: () => void) {
-		return(this.start(onFinish).then(this.resolve).catch(this.reject));
+		var result = this.func();
+
+		result.then(onFinish, onFinish);
+		if(this.resolve) result.then(this.resolve, this.reject);
+
+		return(result);
 	}
 
 	private func: () => PromiseType;
 
-	private resolve: any;
-	private reject: any;
+	private promise: PromiseType;
+	private resolve: (result: any) => void;
+	private reject: (err: any) => void;
 }

@@ -1,6 +1,6 @@
 {
   "name": "cwait",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Limit number of promises running in parallel",
   "main": "dist/cwait.js",
   "typings": "dist/cwait.d.ts",

@@ -52,14 +52,11 @@ API
 > Methods:  
 > > **new( )** <sup>&rArr; <code>[Task](#api-Task)</code></sup>  
 > > &emsp;&#x25aa; func <sup><code>() => PromiseType</code></sup>  
-> > **.start( )** <sup>&rArr; <code>PromiseType</code></sup>  
-> > &emsp;<em>Start the task immediately and call onFinish callback when done.</em>  
-> > &emsp;&#x25aa; onFinish <sup><code>() => void</code></sup>  
 > > **.delay( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Wrap task result in a new promise so it can be resolved later.</em>  
 > > &emsp;&#x25aa; Promise <sup><code>[PromisyClass](#api-PromisyClass)</code></sup>  
 > > **.resume( )** <sup>&rArr; <code>PromiseType</code></sup>  
-> > &emsp;<em>Resolve the result of a delayed task and call onFinish when done.</em>  
+> > &emsp;<em>Start the task and call onFinish when done.</em>  
 > > &emsp;&#x25aa; onFinish <sup><code>() => void</code></sup>  
 >
 > <a name="api-TaskQueue"></a>
