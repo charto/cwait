@@ -43,7 +43,7 @@ npm test
 
 API
 ===
-
+Docs generated using [`docts`](https://github.com/charto/docts)
 >
 > <a name="api-Task"></a>
 > ### Class [`Task`](#api-Task)
@@ -54,7 +54,7 @@ API
 > > &emsp;&#x25aa; func <sup><code>() => PromiseType</code></sup>  
 > > **.delay( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Wrap task result in a new promise so it can be resolved later.</em>  
-> > &emsp;&#x25aa; Promise <sup><code>[PromisyClass](#api-PromisyClass)</code></sup>  
+> > &emsp;&#x25aa; Promise <sup><code>PromisyClass</code></sup>  
 > > **.resume( )** <sup>&rArr; <code>PromiseType</code></sup>  
 > > &emsp;<em>Start the task and call onFinish when done.</em>  
 > > &emsp;&#x25aa; onFinish <sup><code>() => void</code></sup>  
@@ -64,15 +64,15 @@ API
 >  
 > Methods:  
 > > **new( )** <sup>&rArr; <code>[TaskQueue](#api-TaskQueue)</code></sup>  
-> > &emsp;&#x25aa; Promise <sup><code>[PromisyClass](#api-PromisyClass)</code></sup>  
+> > &emsp;&#x25aa; Promise <sup><code>PromisyClass</code></sup>  
 > > &emsp;&#x25aa; concurrency <sup><code>number</code></sup>  
 > > **.add( )** <sup>&rArr; <code>PromiseType</code></sup>  
-> > &emsp;<em>Add a new task to the queue.
-It will start when the number of other concurrent tasks is low enough.</em>  
+> > &emsp;<em>Add a new task to the queue.</em>  
+> > &emsp;<em>It will start when the number of other concurrent tasks is low enough.</em>  
 > > &emsp;&#x25aa; func <sup><code>() => PromiseType</code></sup>  
 > > **.wrap( )** <sup>&rArr; <code>(...args: any[]) => PromiseType</code></sup>  
-> > &emsp;<em>Wrap a function returning a promise, so that before running
-it waits until concurrent invocations are below this queue's limit.</em>  
+> > &emsp;<em>Wrap a function returning a promise, so that before running</em>  
+> > &emsp;<em>it waits until concurrent invocations are below this queue's limit.</em>  
 > > &emsp;&#x25aa; func <sup><code>(...args: any[]) => PromiseType</code></sup>  
 > > &emsp;&#x25ab; thisObject<sub>?</sub> <sup><code>any</code></sup>  
 >  
