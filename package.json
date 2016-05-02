@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/charto/cwait#readme",
   "devDependencies": {
-    "bluebird": "^3.3.4",
-    "docts": "0.0.4",
-    "typescript": "^1.8.9"
+    "bluebird": "^3.3.5",
+    "docts": "~0.0.4",
+    "typescript": "^1.8.10"
   }
 }
