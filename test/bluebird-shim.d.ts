@@ -1,12 +1,12 @@
 declare module 'bluebird' {
-	import {TaskQueue, Promisy} from 'cwait';
+	import {Promisy, PromisyClass} from 'cwait';
 
-	var _Promise: { new(): Promisy<any> };
+	var _Promise: PromisyClass<Promisy<any>>;
 
 	class Promise<ReturnType> extends _Promise implements Promisy<Promise<ReturnType>> {
 		constructor(handler: (resolve: any, reject: any) => any);
 
-		then<ReturnType>(handler: () => ReturnType): Promise<ReturnType>;
+		then<ReturnType>(resolved: (result?: any) => ReturnType, rejected?: (err?: any) => any): Promise<ReturnType>;
 
 		static try<ReturnType>(value: ReturnType): Promise<ReturnType>;
 		static delay<ReturnType>(milliseconds: number, value: ReturnType): Promise<ReturnType>;
