@@ -32,6 +32,19 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 		}
 	}
 
+	/** Consider current function idle until promise resolves.
+	  * Useful for making recursive calls. */
+
+	unblock(promise: PromiseType) {
+		this.next();
+
+		var onFinish = () => ++this.busyCount;
+
+		promise.then(onFinish, onFinish);
+
+		return(promise);
+	}
+
 	/** Wrap a function returning a promise, so that before running
 	  * it waits until concurrent invocations are below this queue's limit. */
 
@@ -42,7 +55,9 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	/** Start the next task from the backlog. */
 
 	private next() {
-		var task = this.backlog.shift();
+		var task: Task<PromiseType>;
+
+		if(this.busyCount <= this.concurrency) task = this.backlog.shift();
 
 		if(task) task.resume(this.nextBound);
 		else --this.busyCount;
