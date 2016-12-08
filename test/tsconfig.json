@@ -4,12 +4,12 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"noImplicitAny": true,
+		"noImplicitThis": true,
 		"removeComments": false,
+		"strictNullChecks": true,
 		"target": "es5"
 	},
 	"files": [
-		"bluebird-shim.d.ts",
-
 		"test.ts"
 	]
 }

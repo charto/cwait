@@ -1,7 +1,7 @@
 // This file is part of cwait, copyright (c) 2015-2016 BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
-import {Task, Promisy, PromisyClass, tryFinally} from './Task'
+import {Task, Promisy, PromisyClass, tryFinally} from './Task';
 
 export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	constructor(Promise: PromisyClass<PromiseType>, concurrency: number) {
@@ -24,7 +24,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 			// Schedule the task and return a promise resolving
 			// to the result of task.start().
 
-			var task = new Task(func, this.Promise);
+			const task = new Task(func, this.Promise);
 
 			this.backlog.push(task);
 
@@ -38,7 +38,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	unblock(promise: PromiseType) {
 		this.next();
 
-		var onFinish = () => ++this.busyCount;
+		const onFinish = () => ++this.busyCount;
 
 		promise.then(onFinish, onFinish);
 
@@ -55,21 +55,22 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	/** Start the next task from the backlog. */
 
 	private next() {
-		var task: Task<PromiseType>;
+		let task: Task<PromiseType> | undefined;
 
 		if(this.busyCount <= this.concurrency) task = this.backlog.shift();
 
-		if(task) task.resume(this.nextBound);
-		else --this.busyCount;
+		if(task) {
+			task.resume(this.nextBound);
+		} else --this.busyCount;
 	}
 
 	private nextBound: () => void;
 
 	private Promise: PromisyClass<PromiseType>;
 
-	/** Number of promises allowed to resolve concurrently. */
-	concurrency: number;
-
 	private backlog: Task<PromiseType>[] = [];
 	private busyCount = 0;
+
+	/** Number of promises allowed to resolve concurrently. */
+	concurrency: number;
 }

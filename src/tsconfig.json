@@ -4,11 +4,13 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"noImplicitAny": true,
-		"outDir": "dist",
+		"noImplicitThis": true,
+		"outDir": "../dist",
 		"removeComments": false,
+		"strictNullChecks": true,
 		"target": "es5"
 	},
 	"files": [
-		"src/cwait.ts"
+		"cwait.ts"
 	]
 }

@@ -4,7 +4,7 @@
 declare var process: any;
 
 import * as Promise from 'bluebird';
-import {TaskQueue} from 'cwait';
+import {TaskQueue} from '..';
 
 function equals(a: any, b: any) {
 	if(a != b) {
@@ -69,8 +69,8 @@ function test2() {
 
 	var queue = new TaskQueue(Promise, 1);
 
-	queue.wrap(throws)().then(null, (err: any) => ++testCount);
-	queue.wrap(throws)().then(null, (err: any) => ++testCount);
+	queue.wrap(throws)().then(null as any, (err: any) => ++testCount);
+	queue.wrap(throws)().then(null as any, (err: any) => ++testCount);
 }
 
 function test3() {
@@ -80,8 +80,8 @@ function test3() {
 
 	var queue = new TaskQueue(Promise, 1);
 
-	queue.wrap(rejects)().then(null, (err: any) => ++testCount);
-	queue.wrap(rejects)().then(null, (err: any) => ++testCount);
+	queue.wrap(rejects)().then(null as any, (err: any) => ++testCount);
+	queue.wrap(rejects)().then(null as any, (err: any) => ++testCount);
 }
 
 test1();

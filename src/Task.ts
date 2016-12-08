@@ -26,8 +26,10 @@ export function tryFinally<PromiseType extends Promisy<PromiseType>>(
 	resolve?: (result: any) => void,
 	reject?: (err: any) => void
 ) {
+	let promise: PromiseType;
+
 	try {
-		var promise = func();
+		promise = func();
 
 		// Ensure func return value is a promise.
 		if(typeof(promise.then) != 'function') {
