@@ -2,6 +2,7 @@ cwait
 =====
 
 [![build status](https://travis-ci.org/charto/cwait.svg?branch=master)](http://travis-ci.org/charto/cwait)
+[![npm monthly downloads](https://img.shields.io/npm/dm/cwait.svg)](https://www.npmjs.com/package/cwait)
 [![npm version](https://img.shields.io/npm/v/cwait.svg)](https://www.npmjs.com/package/cwait)
 
 `cwait` provides a queue handler ([`TaskQueue`](#api-TaskQueue)) and a wrapper ([`Task`](#api-Task)) for promises,
