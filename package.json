@@ -8,7 +8,8 @@
     "tsc": "tsc",
     "docts": "docts",
     "tslint": "tslint",
-    "prepublish": "tslint -c src/tslint.json src/*.ts && tsc -p src",
+    "lint": "node src/checkver.js lt 4.1.2 || tslint --type-check -c src/tslint.json -p src/tsconfig.json",
+    "prepublish": "npm run lint && tsc -p src",
     "test": "tsc -p test && node test/test.js"
   },
   "author": "Juha Järvi",
