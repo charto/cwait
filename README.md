@@ -101,24 +101,24 @@ var running = 0;
 var delay = 10;
 
 var fib = queue.wrap(function(n) {
-	// "Calculation" starts. Track maximum concurrent executions.
+    // "Calculation" begins. Track maximum concurrent executions.
     if(++running > maxRunning) maxRunning = running;
 
     return(new Promise(function(resolve, reject) {
         setTimeout(function() {
-			// "Calculation" ends.
+            // "Calculation" ends.
             --running;
 
-			// Each Fibonacci number is the sum of the previous two, except
-			// the first ones are 0, 1 (starting from the 0th number).
-			// Calculate them in parallel and unblock the queue until ready.
+            // Each Fibonacci number is the sum of the previous two, except
+            // the first ones are 0, 1 (starting from the 0th number).
+            // Calculate them in parallel and unblock the queue until ready.
 
             resolve(n < 2 ? n :
                 queue.unblock(Promise.all([
                     fib(n - 1),
                     fib(n - 2)
                 ])).then(function(r) {
-					// Sum results from parallel recursion.
+                    // Sum results from parallel recursion.
                     return(r[0] + r[1]);
                 })
             );
@@ -184,4 +184,4 @@ License
 
 [The MIT License](https://raw.githubusercontent.com/charto/cwait/master/LICENSE)
 
-Copyright (c) 2015-2016 BusFaster Ltd
+Copyright (c) 2015-2017 BusFaster Ltd
