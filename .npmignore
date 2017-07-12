@@ -1,6 +1,7 @@
 node_modules/
 test/
 src/
+package-lock.json
 .travis.yml
 *.log.*
 *.log

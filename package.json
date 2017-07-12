@@ -22,10 +22,10 @@
   },
   "homepage": "https://github.com/charto/cwait#readme",
   "devDependencies": {
-    "@types/bluebird": "^3.0.36",
-    "bluebird": "^3.4.6",
-    "docts": "~0.1.0",
-    "tslint": "^4.0.2",
-    "typescript": "^2.1.4"
+    "@types/bluebird": "^3.5.8",
+    "@types/node": "^6.0.81",
+    "bluebird": "^3.5.0",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1"
   }
 }
