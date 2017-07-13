@@ -32,7 +32,7 @@ export function tryFinally<PromiseType extends Promisy<PromiseType>>(
 		promise = func();
 
 		// Ensure func return value is a promise.
-		if(typeof(promise.then) != 'function') {
+		if(typeof(promise) != 'object' || typeof(promise.then) != 'function') {
 			promise = Promise.resolve(promise);
 		}
 	} catch(err) {

@@ -21,7 +21,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	  * @param func Function to call.
 	  * @param delay Initial delay in milliseconds before making the call. */
 
-	add(func: () => PromiseType, delay = 0) {
+	add(func: () => any, delay = 0) {
 		if(this.busyCount < this.concurrency && !delay) {
 			// Start the task immediately.
 
@@ -57,7 +57,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	/** Wrap a function returning a promise, so that before running
 	  * it waits until concurrent invocations are below this queue's limit. */
 
-	wrap(func: (...args: any[]) => PromiseType, thisObject?: any) {
+	wrap(func: (...args: any[]) => any, thisObject?: any) {
 		return((...args: any[]) => this.add(() => func.apply(thisObject, args)));
 	}
 
