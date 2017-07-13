@@ -28,5 +28,8 @@
     "bluebird": "^3.5.0",
     "tslint": "^5.5.0",
     "typescript": "^2.4.1"
+  },
+  "dependencies": {
+    "cdata": "^0.1.1"
   }
 }

@@ -10,7 +10,7 @@ to limit how many are being resolved simultaneously. It can wrap any ES6-compati
 This allows for example limiting simultaneous downloads with minor changes to existing code.
 Just wrap your existing "download finished" promise and use it as before.
 
-This is a tiny library with no dependencies, usable both in browsers and Node.js.
+This is a tiny library with a single dependency, usable both in browsers and Node.js.
 
 Usage
 -----

@@ -1,4 +1,4 @@
-// This file is part of cwait, copyright (c) 2015-2016 BusFaster Ltd.
+// This file is part of cwait, copyright (c) 2015-2017 BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
 /** Basic functionality we need promises to implement. @ignore internal use. */
@@ -49,10 +49,11 @@ export function tryFinally<PromiseType extends Promisy<PromiseType>>(
 /** Task wraps a promise, delaying it until some resource gets less busy. */
 
 export class Task<PromiseType extends Promisy<PromiseType>> {
-	constructor(func: () => PromiseType, Promise: PromisyClass<PromiseType>) {
-		this.func = func;
-		this.Promise = Promise;
-	}
+	constructor(
+		private func: () => PromiseType,
+		private Promise: PromisyClass<PromiseType>,
+		public stamp: number
+	) {}
 
 	/** Wrap task result in a new promise so it can be resolved later. */
 
@@ -72,9 +73,6 @@ export class Task<PromiseType extends Promisy<PromiseType>> {
 	resume(onFinish: () => void) {
 		return(tryFinally(this.func, onFinish, this.Promise, this.resolve, this.reject));
 	}
-
-	private func: () => PromiseType;
-	private Promise: PromisyClass<PromiseType>;
 
 	private promise: PromiseType;
 	private resolve: (result: any) => void;
