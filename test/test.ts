@@ -41,23 +41,25 @@ function test1() {
 
 	// Run test without limiting concurrency.
 
-	Promise.map(list, run).then((result: string[]) => {
-		++testCount;
+	return(
+		Promise.map(list, run).then((result: string[]) => {
+			++testCount;
 
-		equals(result.join(''), '123456');
-		equals(maxRunning, 6);
+			equals(result.join(''), '123456');
+			equals(maxRunning, 6);
 
-		maxRunning = 0;
+			maxRunning = 0;
 
-		// Run test and limit concurrency.
+			// Run test and limit concurrency.
 
-		return(Promise.map(list, queue.wrap(run)))
-	}).then((result: string[]) => {
-		++testCount;
+			return(Promise.map(list, queue.wrap(run)))
+		}).then((result: string[]) => {
+			++testCount;
 
-		equals(result.join(''), '123456');
-		equals(maxRunning, 3);
-	})
+			equals(result.join(''), '123456');
+			equals(maxRunning, 3);
+		})
+	);
 }
 
 function test2() {
@@ -69,8 +71,12 @@ function test2() {
 
 	var queue = new TaskQueue(Promise, 1);
 
-	queue.wrap(throws)().then(null as any, (err: any) => ++testCount);
-	queue.wrap(throws)().then(null as any, (err: any) => ++testCount);
+	return(
+		Promise.all([
+			queue.wrap(throws)().then(null as any, (err: any) => ++testCount),
+			queue.wrap(throws)().then(null as any, (err: any) => ++testCount)
+		])
+	);
 }
 
 function test3() {
@@ -80,8 +86,12 @@ function test3() {
 
 	var queue = new TaskQueue(Promise, 1);
 
-	queue.wrap(rejects)().then(null as any, (err: any) => ++testCount);
-	queue.wrap(rejects)().then(null as any, (err: any) => ++testCount);
+	return(
+		Promise.all([
+			queue.wrap(rejects)().then(null as any, (err: any) => ++testCount),
+			queue.wrap(rejects)().then(null as any, (err: any) => ++testCount)
+		])
+	);
 }
 
 function test4() {
@@ -99,25 +109,28 @@ function test4() {
 	const result: number[] = [];
 	const start = new Date().getTime();
 
-	Promise.map(
-		unsorted,
-		(item: number) => queue.add(
-			() => {
-				const delta = new Date().getTime() - start - item * 10;
-				if(delta > 0 && delta < 20) result.push(item);
-			},
-			item * 10
+	return(
+		Promise.map(
+			unsorted,
+			(item: number) => queue.add(
+				() => {
+					const delta = new Date().getTime() - start - item * 10;
+					if(delta > 0 && delta < 20) result.push(item);
+				},
+				item * 10
+			)
+		).then(
+			() => result.join(' ') == correct.join(' ') && ++testCount
 		)
-	).then(
-		() => result.join(' ') == correct.join(' ') && ++testCount
 	);
 }
 
-test1();
-test2();
-test3();
-test4();
 
-setTimeout(() => {
-	equals(testCount, 7);
-}, 1000);
+Promise.all([
+	test1(),
+	test2(),
+	test3(),
+	test4()
+]).then(
+	() => equals(testCount, 7)
+);
