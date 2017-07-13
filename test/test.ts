@@ -84,10 +84,40 @@ function test3() {
 	queue.wrap(rejects)().then(null as any, (err: any) => ++testCount);
 }
 
+function test4() {
+	const unsorted: number[] = [];
+
+	function compare(a: number, b: number) { return(a - b); }
+
+	for(let num = 0; num < 100; ++num) {
+		unsorted[num] = ~~(Math.random() * 50);
+	}
+
+	const correct = unsorted.slice(0).sort(compare);
+
+	const queue = new TaskQueue(Promise, 1);
+	const result: number[] = [];
+	const start = new Date().getTime();
+
+	Promise.map(
+		unsorted,
+		(item: number) => queue.add(
+			() => {
+				const delta = new Date().getTime() - start - item * 10;
+				if(delta > 0 && delta < 20) result.push(item);
+			},
+			item * 10
+		)
+	).then(
+		() => result.join(' ') == correct.join(' ') && ++testCount
+	);
+}
+
 test1();
 test2();
 test3();
+test4();
 
 setTimeout(() => {
-	equals(testCount, 6);
+	equals(testCount, 7);
 }, 1000);
