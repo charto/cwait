@@ -1,6 +1,6 @@
 {
   "name": "cwait",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Limit number of promises running in parallel",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,10 +34,10 @@
   ],
   "devDependencies": {
     "@types/bluebird": "^3.5.8",
-    "@types/node": "^6.0.81",
+    "@types/node": "^8.0.19",
     "bluebird": "^3.5.0",
     "tslint": "^5.5.0",
-    "typescript": "^2.4.1"
+    "typescript": "^2.4.2"
   },
   "dependencies": {
     "cdata": "^0.1.1"
