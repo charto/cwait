@@ -9,10 +9,10 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	constructor(Promise: PromisyClass<PromiseType>, concurrency: number) {
 		this.Promise = Promise;
 		this.concurrency = concurrency;
-		this.nextBound = () => this.next();
+		this.nextBound = () => this.next(1);
 		this.nextTickBound = () => {
 			this.timerStamp = 0;
-			this.next();
+			this.next(0);
 		};
 	}
 
@@ -45,7 +45,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	  * Useful for making recursive calls. */
 
 	unblock(promise: PromiseType) {
-		this.next();
+		this.next(1);
 
 		const onFinish = () => ++this.busyCount;
 
@@ -63,35 +63,34 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 
 	/** Start the next task from the backlog. */
 
-	private next() {
+	private next(ended: number) {
 		const stamp = new Date().getTime();
 		let task: Task<PromiseType> | null = null;
 
-		// If another task is eligible to run, get the next scheduled task.
-		if(this.busyCount <= this.concurrency) task = this.backlog.peekTop();
+		this.busyCount -= ended;
 
-		if(task && task.stamp <= stamp) {
+		// If another task is eligible to run, get the next scheduled task.
+		if(this.busyCount < this.concurrency) task = this.backlog.peekTop();
+
+		if(!task) return;
+
+		if(task.stamp <= stamp) {
 			// A task remains, scheduled to start already. Resume it.
+			++this.busyCount;
 			task = this.backlog.extractTop()!;
 			task.resume(this.nextBound);
-		} else {
-			// No tasks are scheduled to start right now.
-			// Any new task can start immediately.
-			--this.busyCount;
+		} else if(!this.timerStamp || task.stamp + 1 < this.timerStamp) {
+			// There is a task scheduled after a delay,
+			// and no current timer firing before the delay.
 
-			if(task && (!this.timerStamp || task.stamp < this.timerStamp)) {
-				// There is a task scheduled after a delay,
-				// and no current timer firing before the delay.
-
-				if(this.timerStamp) {
-					// There is a timer firing too late. Remove it.
-					clearTimeout(this.timer as any);
-				}
-
-				// Start a timer to clear timerStamp and call this function.
-				this.timer = setTimeout(this.nextTickBound, stamp - task.stamp);
-				this.timerStamp = task.stamp;
+			if(this.timerStamp) {
+				// There is a timer firing too late. Remove it.
+				clearTimeout(this.timer as any);
 			}
+
+			// Start a timer to clear timerStamp and call this function.
+			this.timer = setTimeout(this.nextTickBound, ~~(task.stamp - stamp + 1));
+			this.timerStamp = task.stamp;
 		}
 	}
 
