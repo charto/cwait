@@ -30,7 +30,7 @@ var queue = new TaskQueue(Promise, 3);
 
 Promise.map(list, download); // Download all listed files simultaneously.
 
-Promise.map(list, queue.wrap(download))); // Download 3 files at a time.
+Promise.map(list, queue.wrap(download)); // Download 3 files at a time.
 ```
 
 See [`test/test.ts`](test/test.ts) for some runnable code or run it like this:
