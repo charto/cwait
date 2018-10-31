@@ -1,12 +1,17 @@
-// This file is part of cwait, copyright (c) 2015-2017 BusFaster Ltd.
+// This file is part of cwait, copyright (c) 2015- BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
 import { BinaryHeap } from 'cdata/dist/BinaryHeap';
 
-import { Task, Promisy, PromisyClass, tryFinally } from './Task';
+import { Task, PromisyClass, tryFinally } from './Task';
 
-export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
-	constructor(Promise: PromisyClass<PromiseType>, concurrency: number) {
+export class TaskQueue<PromiseType extends PromisyClass> {
+
+	constructor(
+		private Promise: PromiseType,
+		/** Number of promises allowed to resolve concurrently. */
+		public concurrency: number
+	) {
 		this.Promise = Promise;
 		this.concurrency = concurrency;
 		this.nextBound = () => this.next(1);
@@ -44,7 +49,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	/** Consider current function idle until promise resolves.
 	  * Useful for making recursive calls. */
 
-	unblock(promise: PromiseType) {
+	unblock<Result>(promise: PromiseLike<Result>) {
 		this.next(1);
 
 		const onFinish = () => ++this.busyCount;
@@ -57,7 +62,12 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	/** Wrap a function returning a promise, so that before running
 	  * it waits until concurrent invocations are below this queue's limit. */
 
-	wrap(func: (...args: any[]) => any, thisObject?: any) {
+	wrap<Result>(func: () => Result | PromiseLike<Result>, thisObject?: any): () => PromiseLike<Result>;
+	wrap<Result, A>(func: (a: A) => Result | PromiseLike<Result>, thisObject?: any): (a: A) => PromiseLike<Result>;
+	wrap<Result, A, B>(func: (a: A, b: B) => Result | PromiseLike<Result>, thisObject?: any): (a: A, b: B) => PromiseLike<Result>;
+	wrap<Result, A, B, C>(func: (a: A, b: B, c: C) => Result | PromiseLike<Result>, thisObject?: any): (a: A, b: B, c: C) => PromiseLike<Result>;
+	wrap<Result, A, B, C, D>(func: (a: A, b: B, c: C, d: D) => Result | PromiseLike<Result>, thisObject?: any): (a: A, b: B, c: C, d: D) => PromiseLike<Result>;
+	wrap<Result>(func: (...args: any[]) => Result | PromiseLike<Result>, thisObject?: any): (...args: any[]) => PromiseLike<Result> {
 		return((...args: any[]) => this.add(() => func.apply(thisObject, args)));
 	}
 
@@ -65,7 +75,7 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 
 	private next(ended: number) {
 		const stamp = new Date().getTime();
-		let task: Task<PromiseType> | null = null;
+		let task: Task<any> | null = null;
 
 		this.busyCount -= ended;
 
@@ -97,15 +107,12 @@ export class TaskQueue<PromiseType extends Promisy<PromiseType>> {
 	private nextBound: () => void;
 	private nextTickBound: () => void;
 
-	private Promise: PromisyClass<PromiseType>;
-
 	private busyCount = 0;
-	private backlog = new BinaryHeap<Task<PromiseType>>(
-		(a: Task<PromiseType>, b: Task<PromiseType>) => a.stamp - b.stamp
+	private backlog = new BinaryHeap<Task<any>>(
+		(a: Task<any>, b: Task<any>) => a.stamp - b.stamp
 	);
 
-	/** Number of promises allowed to resolve concurrently. */
-	concurrency: number;
 	timer: number | NodeJS.Timer;
 	timerStamp: number;
+
 }

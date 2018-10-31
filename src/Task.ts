@@ -1,40 +1,31 @@
-// This file is part of cwait, copyright (c) 2015-2017 BusFaster Ltd.
+// This file is part of cwait, copyright (c) 2015- BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
-
-/** Basic functionality we need promises to implement. @ignore internal use. */
-
-export interface Promisy<PromiseType> {
-	then(resolved: (result?: any) => any, rejected?: (err?: any) => any): PromiseType;
-}
 
 /** Promise class shim with basic functionality. @ignore internal use. */
 
-export interface PromisyClass<PromiseType> {
-	new(handler: any): PromiseType;
+export interface PromisyClass {
 
-	resolve(result: any): PromiseType;
-	reject(err: any): PromiseType;
+	new<Result>(handler: (resolve: (result?: Result) => any, reject: (err?: any) => any) => any): PromiseLike<Result>;
+
+	resolve<Result>(result: Result | PromiseLike<Result>): PromiseLike<Result>;
+	reject(err: any): PromiseLike<any>;
+
 }
 
 /** Call func and return a promise for its result.
   * Optionally call given resolve or reject handler when the promise settles. */
 
-export function tryFinally<PromiseType extends Promisy<PromiseType>>(
-	func: () => PromiseType,
+export function tryFinally<Result>(
+	func: () => Result | PromiseLike<Result>,
 	onFinish: () => void,
-	Promise: PromisyClass<PromiseType>,
-	resolve?: (result: any) => void,
+	Promise: PromisyClass,
+	resolve?: (result: Result) => void,
 	reject?: (err: any) => void
 ) {
-	let promise: PromiseType;
+	let promise: PromiseLike<Result>;
 
 	try {
-		promise = func();
-
-		// Ensure func return value is a promise.
-		if(typeof(promise) != 'object' || typeof(promise.then) != 'function') {
-			promise = Promise.resolve(promise);
-		}
+		promise = Promise.resolve(func());
 	} catch(err) {
 		// If func threw an error, return a rejected promise.
 		promise = Promise.reject(err);
@@ -48,10 +39,11 @@ export function tryFinally<PromiseType extends Promisy<PromiseType>>(
 
 /** Task wraps a promise, delaying it until some resource gets less busy. */
 
-export class Task<PromiseType extends Promisy<PromiseType>> {
+export class Task<Result> {
+
 	constructor(
-		private func: () => PromiseType,
-		private Promise: PromisyClass<PromiseType>,
+		private func: () => Result | PromiseLike<Result>,
+		private Promise: PromisyClass,
 		public stamp: number
 	) {}
 
@@ -74,7 +66,8 @@ export class Task<PromiseType extends Promisy<PromiseType>> {
 		return(tryFinally(this.func, onFinish, this.Promise, this.resolve, this.reject));
 	}
 
-	private promise: PromiseType;
-	private resolve: (result: any) => void;
+	private promise: PromiseLike<Result>;
+	private resolve: (result: Result) => void;
 	private reject: (err: any) => void;
+
 }
