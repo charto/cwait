@@ -2,16 +2,20 @@
 	"compileOnSave": true,
 	"compilerOptions": {
 		"declaration": true,
-		"lib": ["es5", "es2015.collection"],
+		"declarationDir": "../dist/esm",
+		"lib": [ "es5", "es2015.collection" ],
 		"module": "commonjs",
 		"moduleResolution": "node",
+		"noEmitHelpers": true,
 		"noImplicitAny": true,
 		"noImplicitThis": true,
-		"outDir": "../dist",
+		"outDir": "../dist/cjs",
 		"removeComments": false,
 		"sourceMap": false,
+		"strictFunctionTypes": true,
 		"strictNullChecks": true,
-		"target": "es5"
+		"target": "es5",
+		"types": [ "node" ]
 	},
 	"files": [
 		"index.ts"

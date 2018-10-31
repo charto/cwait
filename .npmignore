@@ -3,6 +3,7 @@ test/
 src/
 package-lock.json
 .travis.yml
+*.lock
 *.log.*
 *.log
 *.tgz
