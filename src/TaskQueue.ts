@@ -1,7 +1,7 @@
 // This file is part of cwait, copyright (c) 2015-2017 BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
-import { BinaryHeap } from 'cdata/dist/BinaryHeap';
+import { BinaryHeap } from 'cdata';
 
 import { Task, Promisy, PromisyClass, tryFinally } from './Task';
 

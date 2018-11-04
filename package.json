@@ -40,6 +40,6 @@
     "typescript": "^2.4.2"
   },
   "dependencies": {
-    "cdata": "^0.1.1"
+    "cdata": "^0.1.3"
   }
 }
